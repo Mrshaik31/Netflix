@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        window.onscroll = function () {
+            const nav = document.querySelector('.nav-bar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        };
+    </script>
+</head>
+
+<body style="background-color: #141414;">
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <a href="#" class="logo">NETFLIX</a>
+        <div class="user-menu">
+            <span style="color: white;">Welcome, {{ session['username'] }}</span>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Sign out</a>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    {% if movies %}
+    {% set hero_movie = movies[0] %}
+    <div class="hero-banner"
+        style="background-image: url('https://image.tmdb.org/t/p/original{{ hero_movie.backdrop_path }}');">
+        <div class="hero-content">
+            <h1 class="hero-title">{{ hero_movie.title or hero_movie.name }}</h1>
+            <p class="hero-description">{{ hero_movie.overview }}</p>
+            <div>
+                <button
+                    style="padding: 10px 24px; font-size: 1.2rem; font-weight: bold; border-radius: 4px; border: none; background-color: white; color: black; margin-right: 10px; cursor: pointer;">
+                    &#9658; Play
+                </button>
+                <button
+                    style="padding: 10px 24px; font-size: 1.2rem; font-weight: bold; border-radius: 4px; border: none; background-color: rgba(109, 109, 110, 0.7); color: white; cursor: pointer;">
+                    More Info
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Movie Rows -->
+    <div class="movies-container">
+        <div class="movie-row">
+            <h2 class="row-title">Trending Now</h2>
+            <div class="row-posters">
+                {% for movie in movies %}
+                {% if movie.poster_path %}
+                <div class="poster-card" title="{{ movie.title or movie.name }}">
+                    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
+                        alt="{{ movie.title or movie.name }}">
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Duplicated rows for visual completeness -->
+        <div class="movie-row">
+            <h2 class="row-title">Popular on Netflix</h2>
+            <div class="row-posters">
+                {% for movie in movies|reverse %}
+                {% if movie.poster_path %}
+                <div class="poster-card" title="{{ movie.title or movie.name }}">
+                    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
+                        alt="{{ movie.title or movie.name }}">
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
